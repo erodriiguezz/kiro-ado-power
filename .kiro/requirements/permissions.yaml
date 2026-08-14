@@ -1,0 +1,15 @@
+rules:
+  - capability: shell
+    match: ['git *', 'npm *', 'npx *']
+    effect: allow
+
+  - capability: fs_write
+    match: ['src/**', 'tests/**', 'steering/**']
+    effect: allow
+
+  - capability: fs_read
+    effect: allow
+
+  - capability: mcp
+    match: ['azure-devops/*']
+    effect: allow

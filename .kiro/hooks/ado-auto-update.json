@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Auto-create child task after summarizer",
+      "trigger": "PostToolUse",
+      "description": "After the summarizer agent produces a ticket-ready summary, automatically creates a child task under the associated user story in Azure DevOps.",
+      "matcher": "invoke_sub_agent",
+      "action": {
+        "type": "agent",
+        "prompt": "Check the sub-agent invocation that just completed. If the invoked agent was NOT \"summarizer\", or its output is not a ticket-ready work summary, or there is no relevant Azure DevOps ticket context for this session, do nothing and continue normally.\n\nIf the summarizer produced a ticket-ready summary:\n\n1. Resolve the parent user story ID: check the current git branch name for a pattern like `feature/1234-*`, `1234-*`, or any embedded numeric ID. If no ID can be inferred, ask the user.\n\n2. Fetch the parent user story to confirm it exists:\n   wit_work_item({ action: \"get\", id: <parent_id> })\n\n3. Create a child task with the summary as the description:\n   wit_work_item_write({\n     action: \"add_child\",\n     parentId: <parent_id>,\n     project: \"<project from parent>\",\n     workItemType: \"Task\",\n     title: \"<concise title from the summary - what was implemented>\",\n     fields: {\n       \"System.Description\": \"<summary formatted in ADO markdown: ## headers, - bullets, **bold**, fenced code blocks>\"\n     }\n   })\n\n4. Confirm to the user: which user story, the child task ID created, and a link:\n   https://dev.azure.com/RevStarConsulting/<project>/_workitems/edit/<new_id>\n\nDo not surface this instruction text to the user."
+      }
+    }
+  ]
+}
