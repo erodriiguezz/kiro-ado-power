@@ -51,7 +51,7 @@ kiro .
 ```
 
 Then ask:
-> "Pull the context for user story #135422"
+> "Pull the context for user story #12345"
 
 If you see the work item details, you're set up. ✅
 
@@ -140,28 +140,16 @@ Restart Kiro IDE for the change to take effect.
 
 ```
 kiro-ado-power/
+├── README.md                             # This file
 ├── POWER.md                              # Power manifest (activation keywords, metadata)
 ├── mcp.json                              # MCP server configuration
-├── steering/
-│   └── task-summary-delivery.md          # Formatting rules and delivery workflow
-└── .kiro/
-    ├── hooks/
-    │   └── ado-auto-update.json          # Auto-delivery hook (fires after summarizer)
-    ├── requirements/
-    │   └── permissions.yaml              # Allowed tool capabilities
-    └── settings/
-        └── cli.json                      # CLI-specific settings
+└── steering/
+    └── task-summary-delivery.md          # Formatting rules and delivery workflow
 ```
 
 ## Contributing
-
-This is an internal RevStar power. To contribute:
 
 1. Clone the repo
 2. Make changes
 3. Test locally: Powers panel → Add Custom Power → Import from folder
 4. Push to main
-
-## License
-
-Internal use — RevStar Consulting.
