@@ -160,7 +160,9 @@ kiro-ado-power/
 
 ## Contributing
 
-1. Clone the repo
-2. Make changes
-3. Test locally: Powers panel → Add Custom Power → Import from folder
-4. Push to main
+1. Fork the repo
+2. Create a feature branch (`git checkout -b my-change`)
+3. Make changes
+4. Test locally: Powers panel → Add Custom Power → Import from folder
+5. Commit with a [semantic message](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`)
+6. Push to your fork and open a Pull Request
