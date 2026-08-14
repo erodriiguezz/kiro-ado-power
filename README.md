@@ -16,15 +16,15 @@ A [Kiro](https://kiro.dev) power that connects your development sessions to Azur
 
 - [Kiro IDE](https://kiro.dev/downloads/) or [Kiro CLI](https://kiro.dev/cli/)
 - [Node.js 16+](https://nodejs.org/) (`node --version` to check)
-- Access to `dev.azure.com/RevStarConsulting`
+- An Azure DevOps organization with work items
 
 ### 1. Generate a Personal Access Token
 
-1. Go to [dev.azure.com/RevStarConsulting/_usersSettings/tokens](https://dev.azure.com/RevStarConsulting/_usersSettings/tokens)
+1. Go to `https://dev.azure.com/{your-org}/_usersSettings/tokens`
 2. Click **+ New Token**
 3. Set:
    - **Name**: `Kiro`
-   - **Organization**: `RevStarConsulting`
+   - **Organization**: your org
    - **Scopes**: Custom defined → ✅ **Work Items: Read & Write**
    - **Expiration**: 90 days
 4. Click **Create** and **copy the token** (it's shown only once)
@@ -36,7 +36,18 @@ echo 'export AZURE_DEVOPS_PAT="paste-your-token-here"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 3. Install the power
+### 3. Configure the power
+
+After installing, update `mcp.json` with your org details:
+
+```json
+{
+  "AZURE_DEVOPS_ORG_URL": "https://dev.azure.com/your-org-name",
+  "AZURE_DEVOPS_DEFAULT_PROJECT": "Your Project Name"
+}
+```
+
+### 4. Install the power
 
 In Kiro IDE:
 1. Open the **Powers panel** (⚡ icon in sidebar)
@@ -44,7 +55,7 @@ In Kiro IDE:
 3. Enter: `https://github.com/erodriiguezz/kiro-ado-power`
 4. Click **Install**
 
-### 4. Launch and test
+### 5. Launch and test
 
 ```bash
 kiro .
@@ -118,7 +129,7 @@ bugfix/5678-null-check
 When your PAT expires (every 90 days):
 
 ```bash
-# Generate new token at dev.azure.com/RevStarConsulting/_usersSettings/tokens
+# Generate new token at dev.azure.com/{your-org}/_usersSettings/tokens
 # Then update .zshrc:
 sed -i '' 's/export AZURE_DEVOPS_PAT=.*/export AZURE_DEVOPS_PAT="NEW_TOKEN_HERE"/' ~/.zshrc
 source ~/.zshrc
