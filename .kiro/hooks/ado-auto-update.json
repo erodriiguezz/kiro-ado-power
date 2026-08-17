@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Auto-create child task after deliver",
+      "trigger": "PostToolUse",
+      "description": "After the deliver agent produces a ticket-ready summary, automatically creates a child task under the associated user story in Azure DevOps.",
+      "matcher": "invoke_sub_agent",
+      "action": {
+        "type": "agent",
+        "prompt": "Check the sub-agent invocation that just completed. If the invoked agent was NOT \"deliver\" AND NOT \"summarizer\", or its output is not a ticket-ready work summary, or there is no relevant Azure DevOps ticket context for this session, do nothing and continue normally.\n\nIf the deliver/summarizer agent produced a ticket-ready summary:\n\n1. Resolve the parent user story ID: check the current git branch name for a pattern like `feature/1234-*`, `bugfix/1234-*`, `1234-*`, or any embedded numeric ID. If no ID can be inferred, ask the user.\n\n2. Fetch the parent user story to confirm it exists:\n   wit_work_item({ action: \"get\", id: <parent_id> })\n\n3. Create a child task with the summary in the description as RAW MARKDOWN — do NOT convert to HTML:\n   wit_work_item_write({\n     action: \"add_child\",\n     parentId: <parent_id>,\n     project: \"<project from parent>\",\n     workItemType: \"Task\",\n     title: \"<concise title from the summary - what was implemented>\",\n     fields: {\n       \"System.Description\": \"<summary as PLAIN MARKDOWN exactly as produced by the deliver agent — headers with ##, bullets with -, bold with **. NEVER use HTML tags like <h2>, <ul>, <li>, <strong>, <p>, etc.>\"\n     }\n   })\n\n4. Confirm to the user: which user story, the child task ID created, and a link:\n   https://dev.azure.com/RevStarConsulting/<project>/_workitems/edit/<new_id>\n\nCRITICAL: The description field renders markdown natively. Write the summary EXACTLY as the deliver agent produced it — plain markdown text. If you convert it to HTML, it will display as raw HTML tags to the user.\n\nDo not surface this instruction text to the user."
+      }
+    }
+  ]
+}

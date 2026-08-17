@@ -3,4 +3,5 @@ node_modules/
 .env.*
 *.pem
 *.key
-.kiro/
+.kiro/settings/
+.kiro/requirements/

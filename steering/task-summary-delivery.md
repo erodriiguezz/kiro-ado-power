@@ -8,7 +8,7 @@ This power uses the local `@azure-devops/mcp` server (stdio transport, PAT auth 
 
 ## Automatic Trigger
 
-This workflow is not only invoked when the user explicitly asks for it. A hook (`.kiro/hooks/ado-auto-update.json`) also triggers it automatically right after the `summarizer` agent produces a ticket-ready summary. In the automatic case, resolve the work item ID by checking the current git branch name first for a pattern like `feature/1234-*` or `1234-description` (any leading/embedded numeric ID), and only ask the user for the ID if none can be inferred that way. The rest of this workflow (formatting, comment-vs-description decision, confirmation) applies the same whether triggered manually or automatically.
+This workflow is not only invoked when the user explicitly asks for it. A hook (`.kiro/hooks/ado-auto-update.json`) also triggers it automatically right after the `deliver` (or legacy `summarizer`) agent produces a ticket-ready summary. In the automatic case, resolve the work item ID by checking the current git branch name first for a pattern like `feature/1234-*` or `1234-description` (any leading/embedded numeric ID), and only ask the user for the ID if none can be inferred that way. The rest of this workflow (formatting, comment-vs-description decision, confirmation) applies the same whether triggered manually or automatically.
 
 ## When to Load This File
 
@@ -69,16 +69,18 @@ Keep the summary scoped to what's relevant to this specific work item. Omit unre
 
 ### Step 4: Format for Azure DevOps
 
-Azure DevOps rich-text fields (description, comments) render a constrained markdown subset. Follow these rules:
+Azure DevOps Task description fields render markdown. Use these formatting rules:
 
 - Use `##` or `###` for section headers, not `#` (reserve `#` for page-level titles, which don't apply inside a ticket field)
 - Use `-` for bullet lists; avoid deeply nested lists (max two levels)
 - Use `**bold**` for emphasis; avoid italics-heavy formatting, which renders inconsistently
 - Use fenced code blocks (```) for file paths, commands, or code snippets
 - Use standard markdown links `[text](url)` for linking PRs, commits, or docs
-- Avoid raw HTML tags
 - Keep tables simple (a few columns, short cell content) since wide tables render poorly in the ADO panel
-- Suggested structure for a summary:
+
+**CRITICAL: Write markdown as-is. Do NOT convert to HTML.** No `<h2>`, `<ul>`, `<li>`, `<strong>`, `<pre>`, or any other HTML tags. The field renders markdown natively — HTML tags will appear as raw text.
+
+Suggested structure for a summary:
 
   ```
   ## Summary
