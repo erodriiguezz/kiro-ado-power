@@ -147,6 +147,27 @@ Restart Kiro IDE for the change to take effect.
 | `npx` not found | Install Node.js: `brew install node` |
 | Tools don't appear | Restart Kiro IDE after installing the power |
 
+## Known Issues
+
+### "Check for updates" not detecting new versions (Kiro IDE)
+
+The Kiro IDE's **Check for updates** button in the Powers panel may not detect new commits for custom GitHub-sourced powers. This appears to be a Kiro IDE bug — the button doesn't always run `git fetch` against the remote.
+
+**Workaround — manual pull:**
+
+```bash
+cd ~/.kiro/powers/repos/kiro-ado-power && git pull origin main
+```
+
+Then restart your Kiro IDE session for the updated steering and hooks to take effect.
+
+**Alternative — uninstall and reinstall:**
+
+1. Powers panel → kiro-ado-power → Uninstall
+2. Add Custom Power → Import from GitHub → `https://github.com/erodriiguezz/kiro-ado-power`
+
+This forces a fresh clone with the latest version.
+
 ## Project Structure
 
 ```
@@ -154,8 +175,12 @@ kiro-ado-power/
 ├── README.md                             # This file
 ├── POWER.md                              # Power manifest (activation keywords, metadata)
 ├── mcp.json                              # MCP server configuration
+├── .kiro/
+│   └── hooks/
+│       └── ado-auto-update.json          # Auto-creates child task after deliver agent
 └── steering/
-    └── task-summary-delivery.md          # Formatting rules and delivery workflow
+    ├── task-summary-delivery.md          # Formatting rules and delivery workflow
+    └── time-tracking.md                  # Time tracking guardrails (never log hours)
 ```
 
 ## Contributing
