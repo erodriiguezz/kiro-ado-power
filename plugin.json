@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "kiro-ado-power",
+  "version": "1.2.0",
+  "description": "Azure DevOps integration for Kiro — fetch work item context, create child tasks, push delivery summaries, and manage time tracking with strict guardrails",
+  "author": {
+    "name": "RevStar",
+    "url": "https://revstarconsulting.com"
+  },
+  "keywords": [
+    "azure devops",
+    "ado",
+    "work item",
+    "ticket",
+    "user story",
+    "sprint",
+    "task",
+    "acceptance criteria",
+    "child task",
+    "time tracking"
+  ],
+  "repository": "https://github.com/erodriiguezz/kiro-ado-power",
+  "license": "MIT"
+}
