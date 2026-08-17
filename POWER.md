@@ -1,6 +1,6 @@
 ---
 name: 'kiro-ado-power'
-version: '1.2.1'
+version: '1.2.2'
 displayName: 'Azure DevOps Task Manager'
 description: 'Read user story context (description + acceptance criteria) into your Kiro session, then push a child task with the summarizer output back to ADO when done.'
 keywords:
