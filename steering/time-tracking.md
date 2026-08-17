@@ -25,13 +25,13 @@ When creating a child task under a User Story, the title MUST follow this exact 
 Where:
 - **Role** — one of: `Dev`, `DevOps`, `AI` (must be specified by the user)
 - **Full Name** — the developer's full name (must be specified by the user)
-- **Today's Date** — format: `MM/DD/YYYY`
+- **Today's Date** — format: `MMDDYYYY` (no separators)
 
 Example titles:
 ```
-Dev - Ernesto Rodriguez - 08/17/2026
-DevOps - Maria Santos - 08/17/2026
-AI - James Chen - 08/17/2026
+Dev - Ernesto Rodriguez - 08172026
+DevOps - Maria Santos - 08172026
+AI - James Chen - 08172026
 ```
 
 ## Required Fields
