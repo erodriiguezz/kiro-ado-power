@@ -1,6 +1,6 @@
 # Kiro ADO Power
 
-A [Kiro](https://kiro.dev) power that connects your development sessions to Azure DevOps. Pull user story context into your session, then automatically push implementation summaries back as child tasks when done.
+A [Kiro](https://kiro.dev) power that connects your development sessions to Azure DevOps. Pull user story context into your session, then create child tasks with implementation summaries when you're ready.
 
 ## What it does
 
@@ -109,9 +109,10 @@ bugfix/5678-null-check
 │                                                 │
 │  WORK: code, test, build                        │
 │                                                 │
-│  END: summarizer runs → hook fires              │
+│  END: "Create a task for this work"             │
 │    └─→ create_work_item → child Task            │
 │    └─→ manage_work_item_link → parent link      │
+│    └─→ prints ticket URL for manual updates     │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -144,10 +145,30 @@ Restart Kiro IDE for the change to take effect.
 | "MCP server not connected" | Token not in environment — verify `echo $AZURE_DEVOPS_PAT` shows a value |
 | "Not authorized" (401/403) | PAT expired or scope too narrow — regenerate with Work Items Read & Write |
 | Env var set but still fails | Launch Kiro from terminal (`kiro .`) so it inherits your shell env |
+| Connection works in one IDE window but not another | Re-export the PAT and reload: `sed -i '' 's/export AZURE_DEVOPS_PAT=.*/export AZURE_DEVOPS_PAT="YOUR_TOKEN"/' ~/.zshrc && source ~/.zshrc` then restart the failing IDE window |
 | `npx` not found | Install Node.js: `brew install node` |
 | Tools don't appear | Restart Kiro IDE after installing the power |
 
 ## Known Issues
+
+### "Check for updates" not detecting new versions (Kiro IDE)
+
+The Kiro IDE's **Check for updates** button in the Powers panel may not detect new commits for custom GitHub-sourced powers. This appears to be a Kiro IDE bug — the button doesn't always run `git fetch` against the remote.
+
+**Workaround — manual pull:**
+
+```bash
+cd ~/.kiro/powers/repos/kiro-ado-power && git pull origin main
+```
+
+Then restart your Kiro IDE session for the updated steering and hooks to take effect.
+
+**Alternative — uninstall and reinstall:**
+
+1. Powers panel → kiro-ado-power → Uninstall
+2. Add Custom Power → Import from GitHub → `https://github.com/erodriiguezz/kiro-ado-power`
+
+This forces a fresh clone with the latest version.
 
 ### "Check for updates" not detecting new versions (Kiro IDE)
 

@@ -25,13 +25,13 @@ When creating a child task under a User Story, the title MUST follow this exact 
 Where:
 - **Role** — one of: `Dev`, `DevOps`, `AI` (must be specified by the user)
 - **Full Name** — the developer's full name (must be specified by the user)
-- **Today's Date** — format: `MMDDYYYY` (no separators)
+- **Today's Date** — format: `MMDDYYYY` (no separators, no slashes, no dashes)
 
 Example titles:
 ```
-Dev - Ernesto Rodriguez - 08172026
-DevOps - Maria Santos - 08172026
-AI - James Chen - 08172026
+Dev - Ernesto Rodriguez - 08182026
+DevOps - Maria Santos - 08182026
+AI - James Chen - 08182026
 ```
 
 ## Required Fields
@@ -61,14 +61,13 @@ Once all fields are confirmed, always set hour fields to `0`:
 
 ```json
 {
-  "tool": "wit_work_item_write",
+  "tool": "create_work_item",
   "input": {
-    "action": "add_child",
-    "parentId": "<story_id>",
     "project": "<project>",
-    "workItemType": "Task",
-    "title": "<Role> - <Full Name> - <MM/DD/YYYY>",
-    "fields": {
+    "type": "Task",
+    "title": "<Role> - <Full Name> - <MMDDYYYY>",
+    "description": "<summary>",
+    "additionalFields": {
       "Microsoft.VSTS.Common.Activity": "<activity>",
       "Microsoft.VSTS.Scheduling.OriginalEstimate": 0,
       "Microsoft.VSTS.Scheduling.RemainingWork": 0,
@@ -77,6 +76,13 @@ Once all fields are confirmed, always set hour fields to `0`:
     }
   }
 }
+```
+
+**After creation, ALWAYS print the ticket URL:**
+```
+✅ Task created: https://dev.azure.com/RevStarConsulting/<project>/_workitems/edit/<id>
+
+Update your hours and status directly in the ticket above.
 ```
 
 **Note:** The `Custom.TeamCode` field reference name may vary by ADO project configuration.
