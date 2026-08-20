@@ -8,7 +8,6 @@ A [Kiro](https://kiro.dev) power that connects your development sessions to Azur
 |-----------|-------------|
 | **Read context** | Fetch a user story's description and acceptance criteria to ground your coding session |
 | **Write results** | Create a child task under that user story with a structured implementation summary |
-| **Auto-delivery** | A hook fires after the summarizer agent runs, linking results back to the ticket automatically |
 
 ## Quick Start
 
@@ -36,18 +35,7 @@ echo 'export AZURE_DEVOPS_PAT="paste-your-token-here"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### 3. Configure the power
-
-After installing, update `mcp.json` with your org details:
-
-```json
-{
-  "AZURE_DEVOPS_ORG_URL": "https://dev.azure.com/your-org-name",
-  "AZURE_DEVOPS_DEFAULT_PROJECT": "Your Project Name"
-}
-```
-
-### 4. Install the power
+### 3. Install the power
 
 In Kiro IDE:
 1. Open the **Powers panel** (⚡ icon in sidebar)
@@ -55,7 +43,7 @@ In Kiro IDE:
 3. Enter: `https://github.com/erodriiguezz/kiro-ado-power`
 4. Click **Install**
 
-### 5. Launch and test
+### 4. Launch and test
 
 ```bash
 kiro .
@@ -65,6 +53,24 @@ Then ask:
 > "Pull the context for user story #12345"
 
 If you see the work item details, you're set up. ✅
+
+### Token Rotation / MCP Authorization Errors
+
+If you get an **MCP authorization error** or the server fails to connect, the fix is almost always a stale or missing token. Run this command to reset it:
+
+```bash
+sed -i '' 's/export AZURE_DEVOPS_PAT=.*/export AZURE_DEVOPS_PAT="paste-your-new-token-here"/' ~/.zshrc
+source ~/.zshrc
+```
+
+Then **restart Kiro IDE** (close and reopen, or `kiro .` from terminal).
+
+PATs expire every 90 days. When yours expires:
+1. Generate a new token at the same URL from Step 1
+2. Run the `sed` command above with the new value
+3. Restart Kiro IDE
+
+> **Tip:** If the token is set but one IDE window can't connect while another can, run the `sed` + `source` command and restart the failing window. This is a known env-inheritance quirk on macOS.
 
 ## Usage
 
@@ -80,22 +86,20 @@ The agent fetches the work item's title, description, acceptance criteria, state
 ### Push results (end of session)
 
 ```
+"Create a task for this work under user story #1234"
 "Push a task summary to user story #1234"
 ```
 
-Or let it happen automatically — when the summarizer agent completes, a hook:
-1. Reads the work item ID from your git branch (e.g. `feature/1234-auth-flow`)
-2. Creates a child task with the implementation summary
-3. Links it to the parent user story
+The agent will ask for required fields (Role, Name, Activity, Team Code), then create the child task and **print the ticket URL** so you can update hours and status manually.
 
 ### Branch naming convention
 
-For automatic delivery, include the work item ID in your branch name:
+Include the work item ID in your branch name:
 
 ```
-feature/1234-auth-flow
-1234-payment-integration
-bugfix/5678-null-check
+feat/1234-auth-flow
+feat/5678-payment-integration
+bugfix/9012-null-check
 ```
 
 ## How it works
@@ -125,50 +129,18 @@ bugfix/5678-null-check
 - **Minimum scope** — only Work Items Read & Write
 - **PAT expires** — rotate at the same tokens URL before expiration
 
-## Token Rotation
-
-When your PAT expires (every 90 days):
-
-```bash
-# Generate new token at dev.azure.com/{your-org}/_usersSettings/tokens
-# Then update .zshrc:
-sed -i '' 's/export AZURE_DEVOPS_PAT=.*/export AZURE_DEVOPS_PAT="NEW_TOKEN_HERE"/' ~/.zshrc
-source ~/.zshrc
-```
-
-Restart Kiro IDE for the change to take effect.
-
 ## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
 | "MCP server not connected" | Token not in environment — verify `echo $AZURE_DEVOPS_PAT` shows a value |
-| "Not authorized" (401/403) | PAT expired or scope too narrow — regenerate with Work Items Read & Write |
+| "Not authorized" (401/403) | PAT expired or scope too narrow — run the token rotation command above |
 | Env var set but still fails | Launch Kiro from terminal (`kiro .`) so it inherits your shell env |
 | Connection works in one IDE window but not another | Re-export the PAT and reload: `sed -i '' 's/export AZURE_DEVOPS_PAT=.*/export AZURE_DEVOPS_PAT="YOUR_TOKEN"/' ~/.zshrc && source ~/.zshrc` then restart the failing IDE window |
 | `npx` not found | Install Node.js: `brew install node` |
 | Tools don't appear | Restart Kiro IDE after installing the power |
 
 ## Known Issues
-
-### "Check for updates" not detecting new versions (Kiro IDE)
-
-The Kiro IDE's **Check for updates** button in the Powers panel may not detect new commits for custom GitHub-sourced powers. This appears to be a Kiro IDE bug — the button doesn't always run `git fetch` against the remote.
-
-**Workaround — manual pull:**
-
-```bash
-cd ~/.kiro/powers/repos/kiro-ado-power && git pull origin main
-```
-
-Then restart your Kiro IDE session for the updated steering and hooks to take effect.
-
-**Alternative — uninstall and reinstall:**
-
-1. Powers panel → kiro-ado-power → Uninstall
-2. Add Custom Power → Import from GitHub → `https://github.com/erodriiguezz/kiro-ado-power`
-
-This forces a fresh clone with the latest version.
 
 ### "Check for updates" not detecting new versions (Kiro IDE)
 
@@ -196,9 +168,6 @@ kiro-ado-power/
 ├── README.md                             # This file
 ├── POWER.md                              # Power manifest (activation keywords, metadata)
 ├── mcp.json                              # MCP server configuration
-├── .kiro/
-│   └── hooks/
-│       └── ado-auto-update.json          # Auto-creates child task after deliver agent
 └── steering/
     ├── task-summary-delivery.md          # Formatting rules and delivery workflow
     └── time-tracking.md                  # Time tracking guardrails (never log hours)
