@@ -63,7 +63,7 @@ Confirm it exists and note its project and title.
 
 ### Step 4: Generate the summary
 
-Use the **breakdown format** for the task description:
+Use the **breakdown format** for the task description (markdown):
 
 ```markdown
 ## Summary
